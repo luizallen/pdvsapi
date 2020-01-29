@@ -1,8 +1,9 @@
-﻿namespace PdvApi.Requests
+﻿namespace PdvApi.Models
 {
-    public class CoverageArea
+    public class Address
     {
         public string Type { get; set; }
+
         public string[] Coordinates { get; set; }
     }
 }

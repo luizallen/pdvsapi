@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Linq;
+using AutoFixture;
+using AutoFixture.AutoNSubstitute;
+using AutoFixture.Xunit2;
 
 namespace PdvApi.UnitTests.AutoFixture
 {

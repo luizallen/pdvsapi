@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using FluentValidation.AspNetCore;
+using PdvApi.Validators;
 
 namespace PdvApi
 {
@@ -19,7 +21,16 @@ namespace PdvApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(
+                    fv =>
+                    {
+                        fv.RegisterValidatorsFromAssemblyContaining<PdvRequestValidator>();
+                        fv.RegisterValidatorsFromAssemblyContaining<CoverageAreaValidator>();
+                        fv.RegisterValidatorsFromAssemblyContaining<AddressValidator>();
+                        fv.ImplicitlyValidateChildProperties = true;
+                    });
+
             services.AddHealthChecks();
             services.AddSwaggerGen(c => {
 

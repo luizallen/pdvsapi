@@ -1,4 +1,7 @@
-﻿namespace PdvApi.UnitTests.AutoFixture
+﻿using AutoFixture.Xunit2;
+using Xunit;
+
+namespace PdvApi.UnitTests.AutoFixture
 {
     public class AutoInlineDataAttribute : CompositeDataAttribute
     {

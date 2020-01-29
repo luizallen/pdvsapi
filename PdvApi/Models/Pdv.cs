@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace PdvApi.Requests
+namespace PdvApi.Models
 {
-    public class PdvRequest
+    public class Pdv
     {
+        public Guid Id { get; set; }
         public string TradingName { get; set; }
         public string OwnerName { get; set; }
         public string Document { get; set; }
