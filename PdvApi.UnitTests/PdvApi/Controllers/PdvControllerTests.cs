@@ -8,6 +8,7 @@ using PdvApi.Models;
 using PdvApi.UnitTests.AutoFixture;
 using System;
 using System.Collections.Generic;
+using AutoFixture.Xunit2;
 using Xunit;
 
 namespace PdvApi.UnitTests.PdvApi.Controllers
@@ -27,6 +28,8 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
 
             var response = sut.Create(pdvRequest);
 
+            sut.PdvRepository.DidNotReceive().CreatePdv(Arg.Any<PdvDto>());
+
             response.Should().BeOfType<BadRequestObjectResult>();
         }
 
@@ -36,11 +39,13 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
             PdvDto pdvDto,
             PdvController sut)
         {
+            sut.PdvRepository.GetPdv(Arg.Any<Guid>()).Returns((PdvDto)null);
+
             sut.Mapper.Map<PdvDto>(Arg.Any<Pdv>()).Returns(pdvDto);
 
             var response = sut.Create(pdvRequest);
 
-            sut.Received().PdvRepository.CreatePdv(pdvDto);
+            sut.PdvRepository.Received().CreatePdv(pdvDto);
 
             response.Should().BeOfType<CreatedResult>();
         }
