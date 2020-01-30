@@ -5,11 +5,17 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdvApi", "PdvApi\PdvApi.csproj", "{F62D7741-877F-495B-9180-90806C7452DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdvApi.Infrastructure", "PdvApi.Infrastructure\PdvApi.Infrastructure.csproj", "{EB589B69-2F03-467E-A9A4-34A2FBB8FF83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdvApi.Infrastructure", "PdvApi.Infrastructure\PdvApi.Infrastructure.csproj", "{EB589B69-2F03-467E-A9A4-34A2FBB8FF83}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{155AFD85-5B63-4252-A595-4E5B1053DDF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdvApi.UnitTests", "PdvApi.UnitTests\PdvApi.UnitTests.csproj", "{13B8B8F8-5FA5-4124-AF6D-0BD9F8D45540}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdvApi.UnitTests", "PdvApi.UnitTests\PdvApi.UnitTests.csproj", "{13B8B8F8-5FA5-4124-AF6D-0BD9F8D45540}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9FA19716-3276-4F59-BB98-F4241ABAEE82}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		init.sql = init.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

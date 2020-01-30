@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  pdv.api:
+    image: pdvapi
+    ports:
+    - "7777:80"
+    build:
+      context: .
+      dockerfile: PdvApi/Dockerfile
+    depends_on:
+      - postgres
+ 
+  postgres:
+      image: postgres:9.4
+      restart: always
+      ports:
+        - "5432:5432"
+      volumes:
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      environment:
+           POSTGRES_PASSWORD: admin
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+    - "8080:8080"
