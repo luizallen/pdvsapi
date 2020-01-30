@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace PdvApi.Controllers
 {
     [ApiController]
-    [Route("pdv")]
+    [Route("/api/pdv")]
     public class PdvController : ControllerBase
     {
         public IPdvRepository PdvRepository { get; }

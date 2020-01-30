@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Abstractions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PdvApi.Infrastructure\PdvApi.Infrastructure.csproj" />
   </ItemGroup>
 

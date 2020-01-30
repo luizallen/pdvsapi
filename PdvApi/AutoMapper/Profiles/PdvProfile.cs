@@ -10,15 +10,21 @@ namespace PdvApi.AutoMapper.Profiles
     {
         public PdvProfile()
         {
+            CreateMap<PdvDto, Address>()
+                .ForMember(d => d.Type, o => o.MapFrom(s => s.AddressType))
+                .ForMember(d => d.Coordinates, o => o.MapFrom(s => s.AddressCoordinates));
+
+            CreateMap<PdvDto, CoverageArea>()
+                .ForMember(d => d.Type, o => o.MapFrom(s => s.CoverageAreaType))
+                .ForMember(d => d.Coordinates, o => o.MapFrom(s => s.CoverageAreaCoordinates));
+
             CreateMap<PdvDto, Pdv>()
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TradingName, o => o.MapFrom(s => s.TradingName))
                 .ForMember(d => d.OwnerName, o => o.MapFrom(s => s.OwnerName))
                 .ForMember(d => d.Document, o => o.MapFrom(s => s.Document))
-                .ForMember(d => d.CoverageArea.Type, o => o.MapFrom(s => s.CoverageAreaType))
-                .ForMember(d => d.CoverageArea.Coordinates, o => o.MapFrom(s => s.CoverageAreaCoordinates))
-                .ForMember(d => d.Address.Type, o => o.MapFrom(s => s.AddressType))
-                .ForMember(d => d.Address.Coordinates, o => o.MapFrom(s => s.AddressCoordinates));
+                .ForMember(d => d.Address, o => o.MapFrom(s => s))
+                .ForMember(d => d.CoverageArea, o => o.MapFrom(s => s));
         }
     }
 }

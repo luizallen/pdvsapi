@@ -1,7 +1,9 @@
 ﻿using System;
+using Dapper.Contrib.Extensions;
 
 namespace PdvApi.Infrastructure.Dtos
 {
+    [Table("pdv")]
     public class PdvDto
     {
         public Guid Id { get; set; }
@@ -9,8 +11,8 @@ namespace PdvApi.Infrastructure.Dtos
         public string OwnerName { get; set; }
         public string Document { get; set; }
         public string CoverageAreaType { get; set; }
-        public string[] CoverageAreaCoordinates { get; set; }
+        public float[][][] CoverageAreaCoordinates { get; set; }
         public string AddressType { get; set; }
-        public string[] AddressCoordinates { get; set; }
+        public float[] AddressCoordinates { get; set; }
     }
 }

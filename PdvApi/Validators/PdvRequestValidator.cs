@@ -13,8 +13,8 @@ namespace PdvApi.Validators
             RuleFor(c => c.OwnerName).NotNull().NotEmpty();
             RuleFor(c => c.Document).NotNull().NotEmpty();
             RuleFor(c => c.Document).Length(14);
-            RuleFor(c => c.CoverageArea).NotNull();
-            RuleFor(c => c.Address).NotNull();
+            //RuleFor(c => c.CoverageArea).NotNull();
+            //RuleFor(c => c.Address).NotNull();
         }
     }
 }

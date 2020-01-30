@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PdvApi.AutoMapper.Profiles;
 using PdvApi.Infrastructure.Repositories;
@@ -10,7 +11,7 @@ namespace PdvApi
     {
         public void ConfigureDependencyInjection(IServiceCollection services)
         {
-            services.AddTransient<IPdvRepository, PdvRepository>();
+            services.AddTransient<IPdvRepository>(c => new PdvRepository(Configuration.GetConnectionString("Postgres")));
             services.AddTransient<IMapper>(c => GetAutoMapperInstance());
         }
 
