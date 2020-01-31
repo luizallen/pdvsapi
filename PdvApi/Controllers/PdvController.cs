@@ -10,7 +10,6 @@ using System.Collections.Generic;
 namespace PdvApi.Controllers
 {
     [ApiController]
-    [Route("/api/pdv")]
     public class PdvController : ControllerBase
     {
         public IPdvRepository PdvRepository { get; }
@@ -28,14 +27,15 @@ namespace PdvApi.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        [HttpPost]
+        [HttpPost("/pdv")]
         public IActionResult Create(Pdv pdvRequest)
         {
-            var pdv = PdvRepository.GetPdv(pdvRequest.Id);
+            var pdv = PdvRepository.GetPdv(pdvRequest.Document);
 
             if (pdv != null)
                 return BadRequest("This Pdv already exists");
 
+            pdvRequest.Id = Guid.NewGuid();
             var pdvDto = Mapper.Map<PdvDto>(pdvRequest);
             PdvRepository.CreatePdv(pdvDto);
 
@@ -43,7 +43,7 @@ namespace PdvApi.Controllers
             return Created("", pdvRequest);
         }
 
-        [HttpGet("{pdvId}")]
+        [HttpGet("/pdv/{pdvId}")]
         public IActionResult Get(Guid pdvId)
         {
             var pdvResult = PdvRepository.GetPdv(pdvId);
@@ -56,10 +56,20 @@ namespace PdvApi.Controllers
             return Ok(pdv);
         }
 
-        [HttpGet]
+        [HttpGet("/pdvs")]
+        public IActionResult GetPdvs()
+        {
+            var pdvResult = PdvRepository.GetPdvs();
+
+            var pdv = Mapper.Map<List<Pdv>>(pdvResult);
+
+            return Ok(pdv);
+        }
+
+        [HttpGet("/pdvs/around")]
         public IActionResult GetByCoordinates(string lng, string lat)
         {
-            var pdvResult = PdvRepository.GetPdv(lng, lat);
+            var pdvResult = PdvRepository.GetInAreaPvs(lng, lat);
 
             var pdv = Mapper.Map<List<Pdv>>(pdvResult);
 

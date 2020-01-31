@@ -8,6 +8,8 @@ namespace PdvApi.Infrastructure.Repositories.Abstractions
     {
         void CreatePdv(PdvDto pdv);
         PdvDto GetPdv(Guid pdvId);
-        IList<PdvDto> GetPdv(string lng, string lat);
+        PdvDto GetPdv(string pdvId);
+        IList<PdvDto> GetPdvs();
+        IList<PdvDto> GetInAreaPvs(string lng, string lat);
     }
 }

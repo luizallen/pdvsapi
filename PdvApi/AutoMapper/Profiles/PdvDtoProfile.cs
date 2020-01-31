@@ -15,10 +15,8 @@ namespace PdvApi.AutoMapper.Profiles
                 .ForMember(d => d.TradingName, o => o.MapFrom(s => s.TradingName))
                 .ForMember(d => d.OwnerName, o => o.MapFrom(s => s.OwnerName))
                 .ForMember(d => d.Document, o => o.MapFrom(s => s.Document))
-                .ForMember(d => d.CoverageAreaType, o => o.MapFrom(s => s.CoverageArea.Type))
-                .ForMember(d => d.CoverageAreaCoordinates, o => o.MapFrom(s => s.CoverageArea.Coordinates))
-                .ForMember(d => d.AddressType, o => o.MapFrom(s => s.Address.Type))
-                .ForMember(d => d.AddressCoordinates, o => o.MapFrom(s => s.Address.Coordinates));
+                .ForMember(d => d.CoverageArea, o => o.MapFrom(s => s.CoverageArea))
+                .ForMember(d => d.Address, o => o.MapFrom(s => s.Address));
         }
     }
 }

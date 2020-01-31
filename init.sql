@@ -1,12 +1,10 @@
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 
-create table pdv(
-	id varchar(32),
-	tradingName varchar(100),
-	ownerName varchar(100),
-	document varchar(14),
-	coverageAreaType varchar(10),
-	coverageAreaCoordinates geometry(POINT, 4326),
-	AddressType varchar(10),
-	AddressCoordinates geometry(POINT, 4326));
+create table Pdv(
+	id text,
+	tradingName text,
+	ownerName text,
+	document text,
+	coverageArea geometry(MULTIPOLYGON, 4326),
+	address geometry(POINT, 4326));

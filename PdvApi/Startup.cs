@@ -1,12 +1,15 @@
+using BAMCIS.GeoJSON.Serde;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
-using FluentValidation.AspNetCore;
 using PdvApi.Validators;
+using System;
+using System.Collections.Generic;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace PdvApi
 {
@@ -22,12 +25,18 @@ namespace PdvApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
+                .AddNewtonsoftJson(j =>
+                {
+                    j.SerializerSettings.Converters = new List<JsonConverter>
+                    {
+                        new MultiPolygonConverter(),
+                        new InheritanceBlockerConverter()
+                    };
+                })
                 .AddFluentValidation(
                     fv =>
                     {
                         fv.RegisterValidatorsFromAssemblyContaining<PdvRequestValidator>();
-                        fv.RegisterValidatorsFromAssemblyContaining<CoverageAreaValidator>();
-                        fv.RegisterValidatorsFromAssemblyContaining<AddressValidator>();
                         fv.ImplicitlyValidateChildProperties = true;
                     });
 

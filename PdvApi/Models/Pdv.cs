@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BAMCIS.GeoJSON;
+using System;
 
 namespace PdvApi.Models
 {
@@ -8,7 +9,7 @@ namespace PdvApi.Models
         public string TradingName { get; set; }
         public string OwnerName { get; set; }
         public string Document { get; set; }
-        public CoverageArea CoverageArea { get; set; }
-        public Address Address { get; set; }
+        public MultiPolygon CoverageArea { get; set; }
+        public Point Address { get; set; }
     }
 }

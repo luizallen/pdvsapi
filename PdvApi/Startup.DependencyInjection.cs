@@ -22,7 +22,7 @@ namespace PdvApi
                 cfg.AddProfile<PdvDtoProfile>();
             });
 
-            config.AssertConfigurationIsValid();
+           //config.AssertConfigurationIsValid();
 
            return new Mapper(config);
         }
