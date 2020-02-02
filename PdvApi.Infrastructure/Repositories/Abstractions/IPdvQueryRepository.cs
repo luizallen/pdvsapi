@@ -4,11 +4,10 @@ using System.Collections.Generic;
 
 namespace PdvApi.Infrastructure.Repositories.Abstractions
 {
-    public interface IPdvRepository
+    public interface IPdvQueryRepository
     {
-        void CreatePdv(PdvDto pdv);
         PdvDto GetPdv(Guid pdvId);
-        PdvDto GetPdv(string pdvId);
+        PdvDto GetPdv(string document);
         IList<PdvDto> GetPdvs();
         IList<PdvDto> GetInAreaPvs(string lng, string lat);
     }

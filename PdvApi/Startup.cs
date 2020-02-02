@@ -1,15 +1,9 @@
-using BAMCIS.GeoJSON.Serde;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using PdvApi.Validators;
-using System;
-using System.Collections.Generic;
-using JsonConverter = Newtonsoft.Json.JsonConverter;
+using PdvApi.Middleware;
 
 namespace PdvApi
 {
@@ -24,39 +18,8 @@ namespace PdvApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddNewtonsoftJson(j =>
-                {
-                    j.SerializerSettings.Converters = new List<JsonConverter>
-                    {
-                        new MultiPolygonConverter(),
-                        new InheritanceBlockerConverter()
-                    };
-                })
-                .AddFluentValidation(
-                    fv =>
-                    {
-                        fv.RegisterValidatorsFromAssemblyContaining<PdvRequestValidator>();
-                        fv.ImplicitlyValidateChildProperties = true;
-                    });
-
-            services.AddHealthChecks();
-            services.AddSwaggerGen(c => {
-
-                c.SwaggerDoc("v1",
-                    new OpenApiInfo
-                    {
-                        Title = "PDV's Api",
-                        Version = "v1",
-                        Description = "Api para cadastro e consulta de PDVs",
-                        Contact = new OpenApiContact
-                        {
-                            Name = "Luiz Augusto Frambach",
-                            Url = new Uri("https://github.com/luizallen")
-                        }
-                    });
-            });
-
+            ConfigureController(services);
+            ConfigureSwagger(services);
             ConfigureDependencyInjection(services);
         }
 
@@ -84,6 +47,8 @@ namespace PdvApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseMiddleware<ExceptionMiddleware>();
         }
     }
 }

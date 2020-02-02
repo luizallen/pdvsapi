@@ -6,14 +6,14 @@ using Xunit;
 
 namespace PdvApi.UnitTests.Infrastructure.Repositories
 {
-    public class PdvRepositoryTests
+    public class PdvCommandRepositoryTests
     {
         [Theory, AutoNSubstituteData]
         public void Sut_ShouldGuardItsClause(GuardClauseAssertion assertion)
-            => assertion.Verify(typeof(PdvRepository).GetConstructors());
+            => assertion.Verify(typeof(PdvCommandRepository).GetConstructors());
 
         [Theory, AutoNSubstituteData]
-        public void Sut_Is_ITedProcessor(PdvRepository sut)
-            => Assert.IsAssignableFrom<IPdvRepository>(sut);
+        public void Sut_Is_ITedProcessor(PdvCommandRepository sut)
+            => Assert.IsAssignableFrom<IPdvCommandRepository>(sut);
     }
 }

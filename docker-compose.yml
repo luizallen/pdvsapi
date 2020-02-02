@@ -12,17 +12,24 @@ services:
       - postgres
  
   postgres:
-      image: kartoza/postgis:12.0
-      restart: always
-      ports:
-        - "5432:5432"
-      volumes:
-        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      environment:
-           POSTGRES_USER: postgres
-           POSTGRES_PASS: admin
-           POSTGRES_DBNAME: postgres
+    image: kartoza/postgis:12.0
+    restart: always
+    ports:
+    - "5000:5432"
+    volumes:
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASS: admin
+      POSTGRES_DBNAME: postgres
 
+  elk:
+    image: sebp/elk
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+    
   adminer:
     image: adminer
     restart: always

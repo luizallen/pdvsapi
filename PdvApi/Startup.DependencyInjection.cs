@@ -4,6 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using PdvApi.AutoMapper.Profiles;
 using PdvApi.Infrastructure.Repositories;
 using PdvApi.Infrastructure.Repositories.Abstractions;
+using Serilog;
+using Serilog.Core;
+using Serilog.Sinks.Elasticsearch;
+using System;
 
 namespace PdvApi
 {
@@ -11,8 +15,13 @@ namespace PdvApi
     {
         public void ConfigureDependencyInjection(IServiceCollection services)
         {
-            services.AddTransient<IPdvRepository>(c => new PdvRepository(Configuration.GetConnectionString("Postgres")));
+            var postgresConnectionString = Configuration.GetConnectionString("Postgres");
+
+            services.AddTransient<IPdvQueryRepository>(c => new PdvQueryRepository(postgresConnectionString));
+            services.AddTransient<IPdvCommandRepository>(c => new PdvCommandRepository(postgresConnectionString));
             services.AddTransient<IMapper>(c => GetAutoMapperInstance());
+
+            services.AddTransient<ILogger>(c => GetLogInstance());
         }
 
         private Mapper GetAutoMapperInstance()
@@ -22,9 +31,22 @@ namespace PdvApi
                 cfg.AddProfile<PdvDtoProfile>();
             });
 
-           //config.AssertConfigurationIsValid();
+           config.AssertConfigurationIsValid();
 
            return new Mapper(config);
+        }
+
+        private Logger GetLogInstance()
+        {
+            var elasticUri = Configuration["ElasticConfiguration:Uri"];
+
+            return new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
+                {
+                    AutoRegisterTemplate = true,
+                })
+                .CreateLogger();
         }
     }
 }

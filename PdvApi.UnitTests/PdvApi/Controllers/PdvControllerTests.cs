@@ -8,7 +8,6 @@ using PdvApi.Models;
 using PdvApi.UnitTests.AutoFixture;
 using System;
 using System.Collections.Generic;
-using AutoFixture.Xunit2;
 using Xunit;
 
 namespace PdvApi.UnitTests.PdvApi.Controllers
@@ -22,13 +21,14 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
         [Theory, AutoNSubstituteData]
         public void Create_WhenGetPdvReturnAnyPdv_ShouldReturnBadRequest(
             Pdv pdvRequest,
+            PdvDto pdvDto,
             PdvController sut)
         {
-            sut.PdvRepository.GetPdv(Arg.Any<Guid>()).Returns(new PdvDto());
+            sut.PdvQueryRepository.GetPdv(Arg.Any<Guid>()).Returns(pdvDto);
 
             var response = sut.Create(pdvRequest);
 
-            sut.PdvRepository.DidNotReceive().CreatePdv(Arg.Any<PdvDto>());
+            sut.PdvCommandRepository.DidNotReceive().CreatePdv(Arg.Any<PdvDto>());
 
             response.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -39,13 +39,13 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
             PdvDto pdvDto,
             PdvController sut)
         {
-            sut.PdvRepository.GetPdv(Arg.Any<Guid>()).Returns((PdvDto)null);
+            sut.PdvQueryRepository.GetPdv(Arg.Any<Guid>()).Returns((PdvDto)null);
 
             sut.Mapper.Map<PdvDto>(Arg.Any<Pdv>()).Returns(pdvDto);
 
             var response = sut.Create(pdvRequest);
 
-            sut.PdvRepository.Received().CreatePdv(pdvDto);
+            sut.PdvCommandRepository.Received().CreatePdv(pdvDto);
 
             response.Should().BeOfType<CreatedResult>();
         }
@@ -55,7 +55,7 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
             Guid pdvId,
             PdvController sut)
         {
-            sut.PdvRepository.GetPdv(pdvId).Returns((PdvDto)null);
+            sut.PdvQueryRepository.GetPdv(pdvId).Returns((PdvDto)null);
 
             var response = sut.Get(pdvId);
 
@@ -69,7 +69,7 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
             Pdv pdv,
             PdvController sut)
         {
-            sut.PdvRepository.GetPdv(pdvId).Returns(pdvDto);
+            sut.PdvQueryRepository.GetPdv(pdvId).Returns(pdvDto);
             sut.Mapper.Map<Pdv>(pdvDto).Returns(pdv);
 
             var response = sut.Get(pdvId);
@@ -79,7 +79,38 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
         }
 
         [Theory, AutoNSubstituteData]
-        public void Get_WhenPassLngAndLatAndRepositoryReturnEmpty_ShouldReturnEmptyList(
+        public void GetPdvs_WhenPassLngAndLatAndRepositoryReturnEmpty_ShouldReturnEmptyList(
+            PdvController sut)
+        {
+            List<PdvDto> listOfPdvDto = new List<PdvDto>();
+            List<Pdv> listOfPdv = new List<Pdv>();
+
+            sut.PdvQueryRepository.GetPdvs().Returns(listOfPdvDto);
+            sut.Mapper.Map<List<Pdv>>(listOfPdvDto).Returns(listOfPdv);
+
+            var response = sut.GetPdvs();
+
+            response.Should().BeOfType<OkObjectResult>();
+            ((OkObjectResult)response).Value.Should().Be(listOfPdv);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetPdvs_WhenPassLngAndLat_ShouldReturnListOfPdvs(
+            List<PdvDto> pdvDtos,
+            List<Pdv> pdvs,
+            PdvController sut)
+        {
+            sut.PdvQueryRepository.GetPdvs().Returns(pdvDtos);
+            sut.Mapper.Map<List<Pdv>>(pdvDtos).Returns(pdvs);
+
+            var response = sut.GetPdvs();
+
+            response.Should().BeOfType<OkObjectResult>();
+            ((OkObjectResult)response).Value.Should().Be(pdvs);
+        }
+
+        [Theory, AutoNSubstituteData]
+        public void GetByCoordinates_WhenPassLngAndLatAndRepositoryReturnEmpty_ShouldReturnEmptyList(
             string lng,
             string lat,
             PdvController sut)
@@ -87,7 +118,7 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
             List<PdvDto> listOfPdvDto = new List<PdvDto>();
             List<Pdv> listOfPdv = new List<Pdv>();
 
-            sut.PdvRepository.GetPdv(lng, lat).Returns(listOfPdvDto);
+            sut.PdvQueryRepository.GetInAreaPvs(lng, lat).Returns(listOfPdvDto);
             sut.Mapper.Map<List<Pdv>>(listOfPdvDto).Returns(listOfPdv);
 
             var response = sut.GetByCoordinates(lng, lat);
@@ -97,14 +128,14 @@ namespace PdvApi.UnitTests.PdvApi.Controllers
         }
 
         [Theory, AutoNSubstituteData]
-        public void Get_WhenPassLngAndLat_ShouldReturnListOfPdvs(
+        public void GetByCoordinates_WhenPassLngAndLat_ShouldReturnListOfPdvs(
             string lng,
             string lat,
             List<PdvDto> pdvDtos,
             List<Pdv> pdvs,
             PdvController sut)
         {
-            sut.PdvRepository.GetPdv(lng, lat).Returns(pdvDtos);
+            sut.PdvQueryRepository.GetInAreaPvs(lng, lat).Returns(pdvDtos);
             sut.Mapper.Map<List<Pdv>>(pdvDtos).Returns(pdvs);
 
             var response = sut.GetByCoordinates(lng, lat);

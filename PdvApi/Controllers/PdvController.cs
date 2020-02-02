@@ -1,52 +1,60 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PdvApi.Infrastructure.Dtos;
 using PdvApi.Infrastructure.Repositories.Abstractions;
 using PdvApi.Models;
 using System;
 using System.Collections.Generic;
+using ILogger = Serilog.ILogger;
 
 namespace PdvApi.Controllers
 {
     [ApiController]
     public class PdvController : ControllerBase
     {
-        public IPdvRepository PdvRepository { get; }
+        public IPdvQueryRepository PdvQueryRepository { get; }
+
+        public IPdvCommandRepository PdvCommandRepository { get; set; }
 
         public IMapper Mapper { get; }
 
-        private readonly ILogger<PdvController> _logger;
+        public ILogger Logger { get; }
 
-        public PdvController(IPdvRepository pdvRepository,
+        public PdvController(
+            IPdvQueryRepository pdvQueryRepository,
+            IPdvCommandRepository pdvCommandRepository,
             IMapper mapper,
-            ILogger<PdvController> logger)
+            ILogger logger)
         {
-            PdvRepository = pdvRepository ?? throw new ArgumentNullException(nameof(pdvRepository));
+            PdvQueryRepository = pdvQueryRepository ?? throw new ArgumentNullException(nameof(pdvQueryRepository));
+            PdvCommandRepository = pdvCommandRepository ?? throw new ArgumentNullException(nameof(pdvCommandRepository));
             Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("/pdv")]
         public IActionResult Create(Pdv pdvRequest)
         {
-            var pdv = PdvRepository.GetPdv(pdvRequest.Document);
+            var pdv = PdvQueryRepository.GetPdv(pdvRequest.Document);
 
             if (pdv != null)
                 return BadRequest("This Pdv already exists");
 
             pdvRequest.Id = Guid.NewGuid();
             var pdvDto = Mapper.Map<PdvDto>(pdvRequest);
-            PdvRepository.CreatePdv(pdvDto);
+            PdvCommandRepository.CreatePdv(pdvDto);
 
-            _logger.LogInformation("Creating a PDV", pdvRequest);
+            var uri = HttpContext.Request.GetDisplayUrl();
+
+            Logger.Information("Creating a PDV", pdvRequest);
             return Created("", pdvRequest);
         }
 
         [HttpGet("/pdv/{pdvId}")]
         public IActionResult Get(Guid pdvId)
         {
-            var pdvResult = PdvRepository.GetPdv(pdvId);
+            var pdvResult = PdvQueryRepository.GetPdv(pdvId);
 
             if (pdvResult == null)
                 return NotFound();
@@ -59,7 +67,7 @@ namespace PdvApi.Controllers
         [HttpGet("/pdvs")]
         public IActionResult GetPdvs()
         {
-            var pdvResult = PdvRepository.GetPdvs();
+            var pdvResult = PdvQueryRepository.GetPdvs();
 
             var pdv = Mapper.Map<List<Pdv>>(pdvResult);
 
@@ -69,7 +77,7 @@ namespace PdvApi.Controllers
         [HttpGet("/pdvs/around")]
         public IActionResult GetByCoordinates(string lng, string lat)
         {
-            var pdvResult = PdvRepository.GetInAreaPvs(lng, lat);
+            var pdvResult = PdvQueryRepository.GetInAreaPvs(lng, lat);
 
             var pdv = Mapper.Map<List<Pdv>>(pdvResult);
 
