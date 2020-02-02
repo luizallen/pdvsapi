@@ -6,6 +6,7 @@ using PdvApi.Infrastructure.Repositories;
 using PdvApi.Infrastructure.Repositories.Abstractions;
 using Serilog;
 using Serilog.Core;
+using Serilog.Events;
 using Serilog.Sinks.Elasticsearch;
 using System;
 
@@ -20,8 +21,7 @@ namespace PdvApi
             services.AddTransient<IPdvQueryRepository>(c => new PdvQueryRepository(postgresConnectionString));
             services.AddTransient<IPdvCommandRepository>(c => new PdvCommandRepository(postgresConnectionString));
             services.AddTransient<IMapper>(c => GetAutoMapperInstance());
-
-            services.AddTransient<ILogger>(c => GetLogInstance());
+            services.AddTransient<ILogger>(c => GetLoggerInstance());
         }
 
         private Mapper GetAutoMapperInstance()
@@ -36,15 +36,18 @@ namespace PdvApi
            return new Mapper(config);
         }
 
-        private Logger GetLogInstance()
+        private Logger GetLoggerInstance()
         {
             var elasticUri = Configuration["ElasticConfiguration:Uri"];
 
             return new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
+                .MinimumLevel.Debug()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200/"))
                 {
                     AutoRegisterTemplate = true,
+                    AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                    MinimumLogEventLevel = LogEventLevel.Verbose
                 })
                 .CreateLogger();
         }

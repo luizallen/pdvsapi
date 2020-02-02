@@ -28,7 +28,12 @@ namespace PdvApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }else
+            {
+                app.UseHsts();
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
@@ -47,8 +52,6 @@ namespace PdvApi
             {
                 endpoints.MapControllers();
             });
-
-            app.UseMiddleware<ExceptionMiddleware>();
         }
     }
 }

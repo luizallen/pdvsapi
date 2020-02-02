@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using PdvApi.Infrastructure.Dtos;
 using PdvApi.Infrastructure.Repositories.Abstractions;
@@ -45,9 +44,7 @@ namespace PdvApi.Controllers
             var pdvDto = Mapper.Map<PdvDto>(pdvRequest);
             PdvCommandRepository.CreatePdv(pdvDto);
 
-            var uri = HttpContext.Request.GetDisplayUrl();
-
-            Logger.Information("Creating a PDV", pdvRequest);
+            Logger.Information("Creating a PDV {pdvRequest}", pdvRequest);
             return Created("", pdvRequest);
         }
 

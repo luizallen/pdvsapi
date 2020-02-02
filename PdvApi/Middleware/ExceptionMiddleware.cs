@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Serilog;
 using System;
 using System.Threading.Tasks;
-using Serilog;
 
 namespace PdvApi.Middleware
 {

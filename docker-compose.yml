@@ -10,6 +10,7 @@ services:
       dockerfile: PdvApi/Dockerfile
     depends_on:
       - postgres
+      - elk
  
   postgres:
     image: kartoza/postgis:12.0
